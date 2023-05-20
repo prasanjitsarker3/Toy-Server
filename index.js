@@ -27,6 +27,22 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         const inventionCollection = client.db("inventionDB").collection("products");
+        const galleryCollection = client.db("inventionDB").collection("gallery");
+        const popularCollection = client.db("inventionDB").collection("popular");
+
+
+        app.get('/gallery', async (req, res) => {
+            const cursor = galleryCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+        app.get('/popular', async (req, res) => {
+            const cursor = popularCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+
         app.get('/allInvention', async (req, res) => {
             const result = await inventionCollection.find().toArray();
 
@@ -60,7 +76,7 @@ async function run() {
             const options = { upsert: true }
             const updateInvention = req.body;
             const user = {
-                $set:{
+                $set: {
 
                     sellerName: updateInvention.sellerName,
                     price: updateInvention.price,
