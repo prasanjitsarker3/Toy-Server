@@ -46,7 +46,7 @@ async function run() {
 
 
         app.get('/allInvention', async (req, res) => {
-            const result = await inventionCollection.find().toArray();
+            const result = await inventionCollection.find().limit(20).toArray();
 
             res.send(result);
         })
@@ -63,11 +63,25 @@ async function run() {
             const result = await inventionCollection.find(query).toArray()
             res.send(result);
         })
+        //Search Stars 
+        const indexKey={toyName:1};
+        const indexOption={name:"toyName"};
+        const result=inventionCollection.createIndex(indexKey, indexOption);
+
         app.get('/inventionSearch/:search', async (req, res) => {
-            const query = { toyName: req.params.search };
-            const result = await inventionCollection.find(query).toArray();
-            res.send(result)
+           const search =req.params.search;
+           const result= await inventionCollection.find({
+            $or:[
+                {
+                    toyName:{$regex:search, $options:"i"}
+                }
+            ]
+           }).toArray();
+           res.send(result)
         })
+
+
+
         app.get('/myInvention/:email', async (req, res) => {
             const query = { email: req.params.email }
             const result = await inventionCollection.find(query).toArray();
