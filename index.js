@@ -30,12 +30,14 @@ async function run() {
         const galleryCollection = client.db("inventionDB").collection("gallery");
         const popularCollection = client.db("inventionDB").collection("popular");
 
-
+        //Gallery Collection
         app.get('/gallery', async (req, res) => {
             const cursor = galleryCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
+
+        //Popular Collection
         app.get('/popular', async (req, res) => {
             const cursor = popularCollection.find();
             const result = await cursor.toArray();
@@ -48,11 +50,23 @@ async function run() {
 
             res.send(result);
         })
+
         app.get('/allInvention/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await inventionCollection.findOne(query);
             res.send(result);
+        })
+
+        app.get('/allCategories/:categories', async (req, res) => {
+            const query = { Category: req.params.categories }
+            const result = await inventionCollection.find(query).toArray()
+            res.send(result);
+        })
+        app.get('/inventionSearch/:search', async (req, res) => {
+            const query = { toyName: req.params.search };
+            const result = await inventionCollection.find(query).toArray();
+            res.send(result)
         })
         app.get('/myInvention/:email', async (req, res) => {
             const query = { email: req.params.email }
