@@ -84,7 +84,8 @@ async function run() {
 
         app.get('/myInvention/:email', async (req, res) => {
             const query = { email: req.params.email }
-            const result = await inventionCollection.find(query).toArray();
+            const sort =req?.query?.sort === true? 1: -1;
+            const result = await inventionCollection.find(query).sort({price:sort}).toArray();
             res.send(result);
         })
         app.post('/postInvention', async (req, res) => {
